@@ -23,6 +23,19 @@ const data = await response.json()
 
 console.log(data)
 
+// Get tracking list
+const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=1&limit=20&searchQuery=""', {
+  method: 'get',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': token
+  }
+});
+
+const listData = await listResponse.json()
+
+console.log(listData)
+
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
 })
