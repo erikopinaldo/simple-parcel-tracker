@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "simple-post-tracker",
   "version": "1.0.0",
   "description": "",
@@ -14,6 +15,7 @@
     "@easypost/api": "^5.2.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "node-fetch": "^3.2.6",
     "request": "^2.88.2"
   },
   "devDependencies": {

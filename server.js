@@ -1,33 +1,27 @@
-require('dotenv').config()
+import dotenv  from "dotenv"
+dotenv.config()
 
-const express = require('express')
+import express from "express"
 const app = express()
-const PORT = 8000
-var request = require('request');
 
+import fetch from 'node-fetch';
+
+const PORT = 8000
 const token = process.env.BEARER_TOKEN
 
-// Retrieve courier list
-// request('https://api.trackinghive.com/couriers/list', function (error, response, body) {
-//   console.log('Status:', response.statusCode);
-//   console.log('Headers:', JSON.stringify(response.headers));
-//   console.log('Response:', body);
-// });
-
 // Create tracking
-request({
-    method: 'POST',
-    url: 'https://api.trackinghive.com/trackings',
+const response = await fetch('https://api.trackinghive.com/trackings', {
+    method: 'post',
+    body: "{  \"tracking_number\": \"9361289676090919095391\",  \"slug\": \"usps\"}",
     headers: {
       'Content-Type': 'application/json',
       'Authorization': token
-    },
-    body: "{  \"tracking_number\": \"9361289676090919095392\",  \"slug\": \"usps\"}"
-  }, function (error, response, body) {
-    console.log('Status:', response.statusCode);
-    console.log('Headers:', JSON.stringify(response.headers));
-    console.log('Response:', body);
+    }
   });
+
+const data = await response.json()
+
+console.log(data)
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
