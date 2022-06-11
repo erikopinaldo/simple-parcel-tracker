@@ -4,6 +4,11 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
+// New state (i.e. has never searched for parces) parcel array saved to localStorage
+if (!localStorage.getItem('parcelHistoryArr')) {
+	localStorage.setItem('parcelHistoryArr', JSON.stringify([]))
+  }
+
 (function($) {
 
 	var	$window = $(window),
