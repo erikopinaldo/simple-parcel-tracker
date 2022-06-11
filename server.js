@@ -68,7 +68,7 @@ app.post('/', (req, res) => {
       }
     });
 
-    const listData = await listResponse.json()
+    const listData = await listResponse.json() 
 
     let parcelArr = []
 
@@ -76,6 +76,8 @@ app.post('/', (req, res) => {
       parcelArr.push(parcel.tracking_number)
     }
     console.log(parcelArr)
+
+    res.render('index.ejs', {parcelArr});
   })
 })
 
