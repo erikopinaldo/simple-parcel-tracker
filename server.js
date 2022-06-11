@@ -39,6 +39,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
+  // Create new tracking
   const trackingNumber = req.body.name
   console.log(trackingNumber)
   
@@ -52,25 +53,23 @@ app.post('/', (req, res) => {
   })
   .then(async response => {
     const data = await response.json()
-
     console.log(data)
+  })
+  .then(async () => {
+    // Get tracking list
+    const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=undefined&limit=undefined&searchQuery=""', {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
 
-    res.send(data)
-  }) 
+    const listData = await listResponse.json()
+
+    console.log(listData)
+  })
 })
-
-// Get tracking list
-const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=undefined&limit=undefined&searchQuery=""', {
-  method: 'get',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': token
-  }
-});
-
-const listData = await listResponse.json()
-
-console.log(listData)
 
 app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`)
