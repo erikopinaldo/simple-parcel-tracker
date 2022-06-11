@@ -9,6 +9,10 @@ import fetch from 'node-fetch';
 const PORT = 8000
 const token = process.env.BEARER_TOKEN
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html')
+})
+
 // Create tracking
 const response = await fetch('https://api.trackinghive.com/trackings', {
     method: 'post',
