@@ -24,7 +24,7 @@ const data = await response.json()
 console.log(data)
 
 // Get tracking list
-const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=1&limit=20&searchQuery=""', {
+const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=undefined&limit=undefined&searchQuery=""', {
   method: 'get',
   headers: {
     'Content-Type': 'application/json',
