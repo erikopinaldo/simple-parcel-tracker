@@ -1,34 +1,38 @@
+// Config setup
 import dotenv  from "dotenv"
 dotenv.config()
 
+// Import express module and functions
 import express from "express"
 const app = express()
 
+// For setting up dirname and serving css/js files to client
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// For parsing application/json
+app.use(express.json());
+
+// For parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+// For parsing multipart/form-data
 import multer from "multer"
-const upload = multer()
-
-// for parsing application/json
-app.use(express.json()); 
-
-// for parsing application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true })); 
-
-// for parsing multipart/form-data
+const upload = multer() 
 app.use(upload.array()); 
 app.use(express.static('public'));
 
-// module.exports = app;
-
+// For making requests to third party APIs
 import fetch from 'node-fetch';
 
 const PORT = 8000
+
+// Currently using Trackhive -- this is the token to user their API
 const token = process.env.BEARER_TOKEN
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// App begins here
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
