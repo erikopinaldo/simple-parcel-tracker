@@ -70,7 +70,12 @@ app.post('/', (req, res) => {
 
     const listData = await listResponse.json()
 
-    console.log(listData)
+    let parcelArr = []
+
+    for (let parcel of listData.data) {
+      parcelArr.push(parcel.tracking_number)
+    }
+    console.log(parcelArr)
   })
 })
 
