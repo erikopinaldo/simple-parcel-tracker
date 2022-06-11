@@ -39,23 +39,25 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-  console.log(req.body)
-  res.send('WORKING')
-})
-
-// Create tracking
-const response = await fetch('https://api.trackinghive.com/trackings', {
+  const trackingNumber = req.body.name
+  console.log(trackingNumber)
+  
+  fetch('https://api.trackinghive.com/trackings', {
     method: 'post',
-    body: "{  \"tracking_number\": \"9361289676090919095391\",  \"slug\": \"usps\"}",
+    body: `{  \"tracking_number\": \"${trackingNumber}\",  \"slug\": \"usps\"}`,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': token
     }
-  });
+  })
+  .then(async response => {
+    const data = await response.json()
 
-const data = await response.json()
+    console.log(data)
 
-console.log(data)
+    res.send(data)
+  }) 
+})
 
 // Get tracking list
 const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=undefined&limit=undefined&searchQuery=""', {
