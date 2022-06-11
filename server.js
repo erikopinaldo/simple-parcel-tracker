@@ -24,6 +24,9 @@ const upload = multer()
 app.use(upload.array()); 
 app.use(express.static('public'));
 
+// Set template engine to ejs. This is done so that the server can server ejs files to be rendered by the client
+app.set('view engine', 'ejs')
+
 // For making requests to third party APIs
 import fetch from 'node-fetch';
 
