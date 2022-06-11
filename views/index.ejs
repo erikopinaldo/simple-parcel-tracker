@@ -72,8 +72,8 @@
 													
                           <% for(var i = 0; i < parcelArr.length; i++) {%>
                             <tr>
-                              <td><a href="/"><%= parcelArr[i] %></a></td> 
-                              <td>Delievered</td>
+                              <td><a href="/"><%= parcelArr[i].tracking_number %></a></td> 
+                              <td><%= parcelArr[i].current_status %></td>
                               <td>6 days ago</td>
                             </tr>
                             <% } %>

@@ -56,7 +56,7 @@ app.post('/', (req, res) => {
   })
   .then(async response => {
     const data = await response.json()
-    console.log(data)
+    // console.log(data)
   })
   .then(async () => {
     // Get tracking list
@@ -68,13 +68,9 @@ app.post('/', (req, res) => {
       }
     });
 
-    const listData = await listResponse.json() 
+    const listData = await listResponse.json()
+    const parcelArr = listData.data
 
-    let parcelArr = []
-
-    for (let parcel of listData.data) {
-      parcelArr.push(parcel.tracking_number)
-    }
     console.log(parcelArr)
 
     res.render('index.ejs', {parcelArr});
