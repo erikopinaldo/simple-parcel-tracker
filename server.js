@@ -4,6 +4,21 @@ dotenv.config()
 import express from "express"
 const app = express()
 
+import multer from "multer"
+const upload = multer()
+
+// for parsing application/json
+app.use(express.json()); 
+
+// for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true })); 
+
+// for parsing multipart/form-data
+app.use(upload.array()); 
+app.use(express.static('public'));
+
+// module.exports = app;
+
 import fetch from 'node-fetch';
 
 const PORT = 8000
@@ -15,10 +30,13 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-app.use(express.static('public'))
-
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
+})
+
+app.post('/', (req, res) => {
+  console.log(req.body)
+  res.send('WORKING')
 })
 
 // Create tracking
