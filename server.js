@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 
 app.post('/tracker', (req, res) => {
   // Create new tracking
+  console.log(req.socket.remoteAddress)
   const trackingNumber = req.body.name
   const carrier = req.body.carrier
   console.log(trackingNumber)
