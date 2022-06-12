@@ -74,7 +74,7 @@
                             <tr>
                               <td><a href="/"><%= parcelArr[i].tracking_number %></a></td> 
                               <td><%= parcelArr[i].delivery_status %></td>
-                              <td><%= new Date(parcelArr[i].lastest_checkpoint_time).toLocaleDateString("en-US") + " " + new Date(parcelArr[i].lastest_checkpoint_time).getHours() + ":" + `0${new Date(parcelArr[i].lastest_checkpoint_time).getMinutes()}`.substr(-2) %></td>
+                              <td><%= new Date(parcelArr[i].lastest_checkpoint_time).toLocaleDateString("en-US") + " " + `0${new Date(parcelArr[i].lastest_checkpoint_time).getHours()}`.substr(-2) + ":" + `0${new Date(parcelArr[i].lastest_checkpoint_time).getMinutes()}`.substr(-2) %></td>
                             </tr>
                             <% } %>
 													
