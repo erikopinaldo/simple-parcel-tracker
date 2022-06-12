@@ -34,6 +34,7 @@ const PORT = 8000
 
 // Currently using Trackhive -- this is the token to user their API
 const token = process.env.BEARER_TOKEN
+const apiKey = process.env.TRACKING_API_KEY
 
 // App begins here
 
@@ -44,27 +45,32 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   // Create new tracking
   const trackingNumber = req.body.name
+  const carrier = req.body.carrier
   console.log(trackingNumber)
   
-  fetch('https://api.trackinghive.com/trackings', {
+  fetch(`https://api.trackingmore.com/v3/trackings/create`, {
     method: 'post',
-    body: `{  \"tracking_number\": \"${trackingNumber}\",  \"slug\": \"usps\"}`,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': token
-    }
+      'Tracking-Api-Key': apiKey
+    },
+    body: JSON.stringify([
+      {
+        "tracking_number": trackingNumber,
+        "courier_code": carrier,
+      }
+    ])
   })
   .then(async response => {
     const data = await response.json()
-    // console.log(data)
+    console.log(data)
   })
   .then(async () => {
     // Get tracking list
-    const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=undefined&limit=undefined&searchQuery=""', {
-      method: 'get',
+    const listResponse = await fetch(`https://api.trackingmore.com/v3/trackings/get?tracking_numbers=${trackingNumber}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Tracking-Api-Key': apiKey
       }
     });
 

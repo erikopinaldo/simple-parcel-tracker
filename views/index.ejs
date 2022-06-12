@@ -37,10 +37,10 @@
 													<label for="carrier">Carrier</label>
 													<select name="carrier" id="carrier">
 														<option value="">- Carrier -</option>
-														<option value="Canada Post">Canada Post</option>
-														<option value="Fedex">Fedex</option>
-														<option value="Purolator">Purolator</option>
-														<option value="DHL">DHL</option>
+														<option value="canada-post">Canada Post</option>
+														<option value="fedex">Fedex</option>
+														<option value="purolator">Purolator</option>
+														<option value="dhl">DHL</option>
 													</select>
 												</div>
 											</div>
@@ -73,8 +73,8 @@
                           <% for(var i = 0; i < parcelArr.length; i++) {%>
                             <tr>
                               <td><a href="/"><%= parcelArr[i].tracking_number %></a></td> 
-                              <td><%= parcelArr[i].current_status %></td>
-                              <td><%= new Date(parcelArr[i].modified).toLocaleDateString("en-US") + " " + new Date(parcelArr[i].modified).getHours() + ":" + `0${new Date(parcelArr[i].modified).getMinutes()}`.substr(-2) %></td>
+                              <td><%= parcelArr[i].delivery_status %></td>
+                              <td><%= new Date(parcelArr[i].lastest_checkpoint_time).toLocaleDateString("en-US") + " " + new Date(parcelArr[i].lastest_checkpoint_time).getHours() + ":" + `0${new Date(parcelArr[i].lastest_checkpoint_time).getMinutes()}`.substr(-2) %></td>
                             </tr>
                             <% } %>
 													
