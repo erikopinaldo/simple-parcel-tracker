@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
 })
 
-app.post('/', (req, res) => {
+app.post('/tracker', (req, res) => {
   // Create new tracking
   const trackingNumber = req.body.name
   const carrier = req.body.carrier
