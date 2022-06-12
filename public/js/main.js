@@ -21,8 +21,11 @@ function addTrackingToLocalStorage() {
 	console.log(trackingNumber)
 	
 	console.log('click!!')
-	parcelHistoryArr.push(trackingNumber)
-	localStorage.setItem('parcelHistoryArr', JSON.stringify(parcelHistoryArr))
+	
+	if (parcelHistoryArr.indexOf(trackingNumber) === -1) {
+		parcelHistoryArr.push(trackingNumber)
+		localStorage.setItem('parcelHistoryArr', JSON.stringify(parcelHistoryArr))
+	}	
 }
 
 (function($) {
