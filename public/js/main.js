@@ -19,6 +19,8 @@ document.querySelector('button').addEventListener('click', addTrackingToLocalSto
 function addTrackingToLocalStorage() {
 	const trackingNumber = document.querySelector('input').value
 	console.log(trackingNumber)
+
+	console.log(document.getElementById('carrier').value)
 	
 	console.log('click!!')
 	
