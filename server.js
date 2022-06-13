@@ -6,6 +6,11 @@ dotenv.config()
 import express from "express"
 const app = express()
 
+// Import MongoDB module and functions
+import {MongoClient} from 'mongodb'
+const dbConnectionString = process.env.DB_CONNECTION_STRING
+const client = new MongoClient(dbConnectionString)
+
 // For setting up dirname and serving css/js files to client
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -38,52 +43,69 @@ const apiKey = process.env.TRACKING_API_KEY
 
 // App begins here
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
-})
+// Connect to db
+MongoClient.connect(dbConnectionString, { useUnifiedTopology: true })
+  .then(client => {
+    console.log('Connected to Database')
+    const db = client.db('simple-parcel-tracker')
+    const trackingNumbersCollection = db.collection('tracking-numbers')
 
-app.post('/tracker', (req, res) => {
-  // Create new tracking
-  console.log(req.socket.remoteAddress)
-  const trackingNumber = req.body.name
-  const carrier = req.body.carrier
-  console.log(trackingNumber)
-  
-  fetch(`https://api.trackingmore.com/v3/trackings/create`, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      'Tracking-Api-Key': apiKey
-    },
-    body: JSON.stringify([
-      {
-        "tracking_number": trackingNumber,
-        "courier_code": carrier,
-      }
-    ])
+    app.get('/', (req, res) => {
+      res.sendFile(__dirname + '/index.html')
+    })
+    
+    app.post('/tracker', (req, res) => {
+      // Create new tracking
+      console.log(req.socket.remoteAddress)
+      const trackingNumber = req.body.name
+      const carrier = req.body.carrier
+      console.log(trackingNumber)
+      
+      fetch(`https://api.trackingmore.com/v3/trackings/create`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Tracking-Api-Key': apiKey
+        },
+        body: JSON.stringify([
+          {
+            "tracking_number": trackingNumber,
+            "courier_code": carrier,
+          }
+        ])
+      })
+      .then(async response => {
+        const data = await response.json()
+        console.log("CREATE RESPONSE: ", data)
+
+        trackingNumbersCollection.insertOne({trackingNumber, carrier})
+        .then(result => {
+          console.log(result)
+        })
+        .catch(error => console.error(error))
+
+      })
+      .then(async () => {
+        // Get tracking list
+        const listResponse = await fetch(`https://api.trackingmore.com/v3/trackings/get?tracking_numbers=${trackingNumber}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Tracking-Api-Key': apiKey
+          }
+        });
+    
+        const listData = await listResponse.json()
+        const parcelArr = listData.data
+    
+        console.log(parcelArr)
+    
+        res.render('index.ejs', {parcelArr});
+      })
+    })
+    
+    app.listen(PORT, () => {
+        console.log(`Server running on ${PORT}`)
+    })
   })
-  .then(async response => {
-    const data = await response.json()
-    console.log(data)
-  })
-  .then(async () => {
-    // Get tracking list
-    const listResponse = await fetch(`https://api.trackingmore.com/v3/trackings/get?tracking_numbers=${trackingNumber}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Tracking-Api-Key': apiKey
-      }
-    });
+  .catch(error => console.error(error))
 
-    const listData = await listResponse.json()
-    const parcelArr = listData.data
-
-    console.log(parcelArr)
-
-    res.render('index.ejs', {parcelArr});
-  })
-})
-
-app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`)
-})
