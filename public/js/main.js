@@ -9,6 +9,27 @@ if (!localStorage.getItem('parcelHistoryArr')) {
 	localStorage.setItem('parcelHistoryArr', JSON.stringify([]))
   }
 
+// Grab current parcelHistoryArr so that new queries can be pushed to this array
+let parcelHistoryArr = JSON.parse(localStorage.getItem('parcelHistoryArr'))
+console.log(parcelHistoryArr)
+
+// Click triggers the query to be saved to local storage
+document.querySelector('button').addEventListener('click', addTrackingToLocalStorage)
+
+function addTrackingToLocalStorage() {
+	const trackingNumber = document.querySelector('input').value
+	console.log(trackingNumber)
+
+	console.log(document.getElementById('carrier').value)
+	
+	console.log('click!!')
+	
+	if (parcelHistoryArr.indexOf(trackingNumber) === -1) {
+		parcelHistoryArr.push(trackingNumber)
+		localStorage.setItem('parcelHistoryArr', JSON.stringify(parcelHistoryArr))
+	}	
+}
+
 (function($) {
 
 	var	$window = $(window),

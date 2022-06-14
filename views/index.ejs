@@ -31,21 +31,23 @@
 											<div class="fields">
 												<div class="field half">
 													<label for="name">Tracking number</label>
-													<input type="text" name="name" id="name" value="" />
+													<input type="text" name="name" id="name" />
 												</div>
 												<div class="field half">
 													<label for="carrier">Carrier</label>
 													<select name="carrier" id="carrier">
 														<option value="">- Carrier -</option>
-														<option value="Canada Post">Canada Post</option>
-														<option value="Fedex">Fedex</option>
-														<option value="Purolator">Purolator</option>
-														<option value="DHL">DHL</option>
+														<option value="canada-post">Canada Post</option>
+														<option value="fedex">Fedex</option>
+														<option value="purolator">Purolator</option>
+														<option value="dhl">DHL</option>
 													</select>
 												</div>
 											</div>
+											<button>TRACK</button>
 											<ul class="actions">
-												<li><input type="submit" name="submit" id="submit" value="TRACK" /></li>
+												<!-- <li><input type="submit" name="submit" id="submit" value="TRACK" /></li> -->
+												
 											</ul>
 										</form>
 									</div>
@@ -73,8 +75,8 @@
                           <% for(var i = 0; i < parcelArr.length; i++) {%>
                             <tr>
                               <td><a href="/"><%= parcelArr[i].tracking_number %></a></td> 
-                              <td><%= parcelArr[i].current_status %></td>
-                              <td><%= new Date(parcelArr[i].modified).toLocaleDateString("en-US") + " " + new Date(parcelArr[i].modified).getHours() + ":" + `0${new Date(parcelArr[i].modified).getMinutes()}`.substr(-2) %></td>
+                              <td><%= parcelArr[i].delivery_status %></td>
+                              <td><%= new Date(parcelArr[i].lastest_checkpoint_time).toLocaleDateString("en-US") + " " + `0${new Date(parcelArr[i].lastest_checkpoint_time).getHours()}`.substr(-2) + ":" + `0${new Date(parcelArr[i].lastest_checkpoint_time).getMinutes()}`.substr(-2) %></td>
                             </tr>
                             <% } %>
 													
@@ -117,12 +119,12 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+			<script src="js/jquery.min.js"></script>
+			<script src="js/jquery.scrollex.min.js"></script>
+			<script src="js/jquery.scrolly.min.js"></script>
+			<script src="js/browser.min.js"></script>
+			<script src="js/breakpoints.min.js"></script>
+			<script src="js/util.js"></script>
+			<script src="js/main.js"></script>
 	</body>
 </html>

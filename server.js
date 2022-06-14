@@ -6,6 +6,11 @@ dotenv.config()
 import express from "express"
 const app = express()
 
+// Import MongoDB module and functions
+import {MongoClient} from 'mongodb'
+const dbConnectionString = process.env.DB_CONNECTION_STRING
+const client = new MongoClient(dbConnectionString)
+
 // For setting up dirname and serving css/js files to client
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -34,49 +39,89 @@ const PORT = 8000
 
 // Currently using Trackhive -- this is the token to user their API
 const token = process.env.BEARER_TOKEN
+const apiKey = process.env.TRACKING_API_KEY
 
 // App begins here
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
-})
+// Connect to db
+MongoClient.connect(dbConnectionString, { useUnifiedTopology: true })
+  .then(client => {
+    console.log('Connected to Database')
+    const db = client.db('simple-parcel-tracker')
+    const trackingNumbersCollection = db.collection('tracking-numbers')
 
-app.post('/', (req, res) => {
-  // Create new tracking
-  const trackingNumber = req.body.name
-  console.log(trackingNumber)
-  
-  fetch('https://api.trackinghive.com/trackings', {
-    method: 'post',
-    body: `{  \"tracking_number\": \"${trackingNumber}\",  \"slug\": \"usps\"}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token
-    }
+    app.get('/', (req, res) => {
+      res.sendFile(__dirname + '/index.html')
+    })
+    
+    app.post('/tracker', (req, res) => {
+      // Create new tracking
+      console.log(req.socket.remoteAddress)
+      const trackingNumber = req.body.name
+      const carrier = req.body.carrier
+      console.log(trackingNumber)
+      
+      fetch(`https://api.trackingmore.com/v3/trackings/create`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Tracking-Api-Key': apiKey
+        },
+        body: JSON.stringify([
+          {
+            "tracking_number": trackingNumber,
+            "courier_code": carrier,
+          }
+        ])
+      })
+      .then(async response => {
+        const data = await response.json()
+        console.log("CREATE RESPONSE: ", data)
+
+        const trackingNumberExists = trackingNumbersCollection.find({trackingNumber: trackingNumber}, {$exists: true}).toArray(function(err, docs) //find if documents that satisfy the criteria exist
+        {     
+            if(docs.length > 0) //if exists
+            {
+                console.log(true) // print out what it sends back
+                return true
+            }
+            else // if it does not 
+            {
+                console.log("Not in docs");
+                trackingNumbersCollection.insertOne({trackingNumber, carrier})
+                .then(result => {
+                  console.log("INSERT ONE RESULT: ", result)
+                })
+                .catch(error => console.error(error))
+            }
+        });
+
+        if (!trackingNumberExists) {
+          
+        }
+      
+      })
+      .then(async () => {
+        // Get tracking list
+        const listResponse = await fetch(`https://api.trackingmore.com/v3/trackings/get?tracking_numbers=${trackingNumber}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Tracking-Api-Key': apiKey
+          }
+        });
+    
+        const listData = await listResponse.json()
+        const parcelArr = listData.data
+    
+        console.log(parcelArr)
+    
+        res.render('index.ejs', {parcelArr});
+      })
+    })
+    
+    app.listen(PORT, () => {
+        console.log(`Server running on ${PORT}`)
+    })
   })
-  .then(async response => {
-    const data = await response.json()
-    // console.log(data)
-  })
-  .then(async () => {
-    // Get tracking list
-    const listResponse = await fetch('https://api.trackinghive.com/trackings?pageId=undefined&limit=undefined&searchQuery=""', {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': token
-      }
-    });
+  .catch(error => console.error(error))
 
-    const listData = await listResponse.json()
-    const parcelArr = listData.data
-
-    console.log(parcelArr)
-
-    res.render('index.ejs', {parcelArr});
-  })
-})
-
-app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`)
-})
