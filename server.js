@@ -78,12 +78,28 @@ MongoClient.connect(dbConnectionString, { useUnifiedTopology: true })
         const data = await response.json()
         console.log("CREATE RESPONSE: ", data)
 
-        trackingNumbersCollection.insertOne({trackingNumber, carrier})
-        .then(result => {
-          console.log(result)
-        })
-        .catch(error => console.error(error))
+        const trackingNumberExists = trackingNumbersCollection.find({trackingNumber: trackingNumber}, {$exists: true}).toArray(function(err, docs) //find if documents that satisfy the criteria exist
+        {     
+            if(docs.length > 0) //if exists
+            {
+                console.log(true) // print out what it sends back
+                return true
+            }
+            else // if it does not 
+            {
+                console.log("Not in docs");
+                trackingNumbersCollection.insertOne({trackingNumber, carrier})
+                .then(result => {
+                  console.log("INSERT ONE RESULT: ", result)
+                })
+                .catch(error => console.error(error))
+            }
+        });
 
+        if (!trackingNumberExists) {
+          
+        }
+      
       })
       .then(async () => {
         // Get tracking list
